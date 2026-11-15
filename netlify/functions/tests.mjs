@@ -38,7 +38,7 @@ export default async (req) => {
 
       const system = buildSystem({
         subject, lectures, lang, topic, onlyTopic: true,
-        modeRules: prompt("tests-review", { DRAFT: JSON.stringify({ questions: draft }, null, 1) }),
+        modeRules: prompt("tests-review", { DRAFT: JSON.stringify({ questions: draft.map(forReviewer) }, null, 1) }),
       });
       const ask = lang === "kk" ? "Тестті тексер." : "Проверь тест.";
       const data = parseAIJson(await askGemini(system, [{ role: "user", text: ask }], { json: true, temperature: 0.1 }));
@@ -47,7 +47,11 @@ export default async (req) => {
 
       const result = draft.map((before, i) => {
         const note = notes.find((n) => Number(n?.n) === i + 1) || {};
-        const fixed = note.status === "fixed" ? normalize([note.fix], lecture.id)[0] : null;
+        let fixed = note.status === "fixed" ? fromReviewer(note.fix, lecture.id) : null;
+        const unchanged = fixed && fixed.q === before.q && fixed.answer === before.answer &&
+          fixed.options.join("\n") === before.options.join("\n") &&
+          fixed.section === before.section && fixed.quote === before.quote;
+        if (unchanged) fixed = null;
         const q = fixed || before;
         const shuffled = shuffle(q);
         return {
@@ -55,7 +59,9 @@ export default async (req) => {
           source: checkSources(lectures, [{ lecture: q.lecture, section: q.section, quote: q.quote }], lang)[0] || null,
           review: {
             status: fixed ? "fixed" : "ok",
-            comment: String(note.comment ?? ""),
+            comment: unchanged
+              ? (lang === "kk" ? "Тексерілді, өзгерту қажет болмады." : "Проверено, изменений не потребовалось.")
+              : String(note.comment ?? ""),
             keyChanged: fixed && before.options[before.answer] !== q.options[q.answer]
               ? { from: before.options[before.answer], to: q.options[q.answer] } : null,
           },
@@ -70,6 +76,29 @@ export default async (req) => {
     return aiError(err);
   }
 };
+
+const LETTERS = ["A", "B", "C", "D"];
+
+function forReviewer(q, i) {
+  return {
+    n: i + 1,
+    q: q.q,
+    options: Object.fromEntries(q.options.map((o, j) => [LETTERS[j], o])),
+    correct: LETTERS[q.answer],
+    correct_text: q.options[q.answer],
+    section: q.section,
+    quote: q.quote,
+  };
+}
+
+function fromReviewer(fix, lectureId) {
+  if (!fix || typeof fix.q !== "string") return null;
+  const options = Array.isArray(fix.options) ? fix.options : Object.values(fix.options || {});
+  const clean = (s) => String(s ?? "").trim().toLowerCase();
+  let answer = options.findIndex((o) => clean(o) === clean(fix.correct_text));
+  if (answer < 0 && typeof fix.correct === "string") answer = LETTERS.indexOf(fix.correct.trim().toUpperCase());
+  return normalize([{ ...fix, options, answer }], lectureId)[0] || null;
+}
 
 function normalize(list, lectureId) {
   return (Array.isArray(list) ? list : [])
