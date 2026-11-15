@@ -425,7 +425,8 @@ button:disabled, textarea:disabled { opacity: .55; cursor: not-allowed; }
 
   .chat { height: auto; min-height: calc(100dvh - 150px); }
   .chat .messages { overflow: visible; }
-  .composer { position: sticky; bottom: 0; background: var(--surface); z-index: 5; }
+  .composer { position: sticky; bottom: 0; background: var(--surface); z-index: 5; padding-bottom: calc(14px + 58px + env(safe-area-inset-bottom)); }
+  main { padding-bottom: 72px; }
 
   .modal { top: 0; left: 0; transform: none; width: 100%; max-height: 100dvh; height: 100dvh; border-radius: 0; }
   .modal-body { padding: 6px 16px 24px; }
