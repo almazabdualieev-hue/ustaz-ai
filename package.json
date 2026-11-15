@@ -1,0 +1,13 @@
+{
+  "name": "ustaz-ai",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Ustaz AI — виртуальный преподаватель колледжа",
+  "type": "module",
+  "scripts": {
+    "dev": "netlify dev"
+  },
+  "dependencies": {
+    "@netlify/blobs": "^11.1.9"
+  }
+}

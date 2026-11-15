@@ -1,0 +1,20 @@
+{
+  "informatics": {
+    "name": { "ru": "Информатика", "kk": "Информатика" },
+    "lectures": [
+      { "id": "inf-1", "file": "informatics/01-algorithms.md", "title": { "ru": "Алгоритмы и блок-схемы", "kk": "Алгоритмдер және блок-схемалар" } },
+      { "id": "inf-2", "file": "informatics/02-number-systems.md", "title": { "ru": "Системы счисления", "kk": "Санау жүйелері" } },
+      { "id": "inf-3", "file": "informatics/03-python-basics.md", "title": { "ru": "Основы Python: переменные и типы", "kk": "Python негіздері: айнымалылар мен типтер" } },
+      { "id": "inf-4", "file": "informatics/04-python-conditions-loops.md", "title": { "ru": "Условия и циклы в Python", "kk": "Python-дағы шарттар мен циклдер" } }
+    ]
+  },
+  "math": {
+    "name": { "ru": "Математика", "kk": "Математика" },
+    "lectures": [
+      { "id": "math-1", "file": "math/01-quadratic-equations.md", "title": { "ru": "Квадратные уравнения", "kk": "Квадрат теңдеулер" } },
+      { "id": "math-2", "file": "math/02-trigonometry.md", "title": { "ru": "Тригонометрия: основные тождества", "kk": "Тригонометрия: негізгі тепе-теңдіктер" } },
+      { "id": "math-3", "file": "math/03-derivative.md", "title": { "ru": "Производная", "kk": "Туынды" } },
+      { "id": "math-4", "file": "math/04-logarithms.md", "title": { "ru": "Логарифмы", "kk": "Логарифмдер" } }
+    ]
+  }
+}
